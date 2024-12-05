@@ -21,14 +21,10 @@ class lv_pm_anima_data():
         self.options = options
 
 def anima_ready_cb(anima_data: lv_pm_anima_data):
-    print("anima ready")
     anima_data.cb(anima_data.page, anima_data.options)
-    
-def anim_x_cb(obj, v):
-    obj.set_x(v)
 
-def anim_y_cb(obj, v):
-    obj.set_y(v)
+def anim_opa_cb(obj, v):
+    obj.set_style_opa(v, lv.STATE.DEFAULT)
 
 # ----------------------------------------------------------------------------------------------------------
 # slide animation
@@ -47,7 +43,7 @@ def _pm_slide_appear(anima_data: lv_pm_anima_data):
     appear_anima.set_path_cb(lv.anim_t.path_ease_out)
     appear_anima.set_time(500)
     appear_anima.set_repeat_count(1)
-    appear_anima.set_custom_exec_cb(lambda a,val: anim_x_cb(anima_data.page.page,val))
+    appear_anima.set_custom_exec_cb(lambda a,val: anima_data.page.page.set_x(val))
     appear_anima.set_start_cb(lambda a: anima_ready_cb(anima_data))
     appear_anima.start()
 
@@ -63,7 +59,7 @@ def _pm_slide_disAppear(anima_data: lv_pm_anima_data):
 
     disAppear_anima.set_time(500)
     disAppear_anima.set_repeat_count(1)
-    disAppear_anima.set_custom_exec_cb(lambda a,val: anim_x_cb(anima_data.page.page,val))
+    disAppear_anima.set_custom_exec_cb(lambda a,val: anima_data.page.page.set_x(val))
     disAppear_anima.set_start_cb(lambda a: anima_ready_cb(anima_data))
     disAppear_anima.set_path_cb(lv.anim_t.path_ease_out)
     disAppear_anima.start()
@@ -86,7 +82,7 @@ def _pm_popup_appear(anima_data: lv_pm_anima_data):
     appear_anima.set_path_cb(lv.anim_t.path_ease_out)
     appear_anima.set_time(500)
     appear_anima.set_repeat_count(1)
-    appear_anima.set_custom_exec_cb(lambda a,val: anim_y_cb(anima_data.page.page,val))
+    appear_anima.set_custom_exec_cb(lambda a,val: anima_data.page.page.set_y(val))
     appear_anima.set_start_cb(lambda a: anima_ready_cb(anima_data))
     appear_anima.start()
 
@@ -104,7 +100,37 @@ def _pm_popup_disAppear(anima_data: lv_pm_anima_data):
 
     disAppear_anima.set_time(500)
     disAppear_anima.set_repeat_count(1)
-    disAppear_anima.set_custom_exec_cb(lambda a,val: anim_y_cb(anima_data.page.page,val))
+    disAppear_anima.set_custom_exec_cb(lambda a,val: anima_data.page.page.set_y(val))
+    disAppear_anima.set_start_cb(lambda a: anima_ready_cb(anima_data))
+    disAppear_anima.set_path_cb(lv.anim_t.path_ease_out)
+    disAppear_anima.start()
+
+# ----------------------------------------------------------------------------------------------------------
+#   fade animation
+# ----------------------------------------------------------------------------------------------------------
+
+def _pm_fade_in(anima_data: lv_pm_anima_data):
+    appear_anima.init() 
+    appear_anima.set_var(anima_data.page.page)
+
+    appear_anima.set_values(lv.OPA.TRANSP, lv.OPA.COVER)
+
+    appear_anima.set_time(1000)
+    appear_anima.set_repeat_count(1)
+    appear_anima.set_path_cb(lv.anim_t.path_ease_out)
+    appear_anima.set_custom_exec_cb(lambda a,val: anima_data.page.page.set_style_opa(val, lv.STATE.DEFAULT))
+    appear_anima.set_start_cb(lambda a: anima_ready_cb(anima_data))
+    appear_anima.start()
+
+def _pm_fade_out(anima_data: lv_pm_anima_data):
+    disAppear_anima.init()
+    disAppear_anima.set_var(anima_data.page.page)
+
+    disAppear_anima.set_values(lv.OPA.COVER, lv.OPA.TRANSP)
+
+    disAppear_anima.set_time(1000)
+    disAppear_anima.set_repeat_count(1)
+    disAppear_anima.set_custom_exec_cb(lambda a,val: anima_data.page.page.set_style_opa(val, lv.STATE.DEFAULT))
     disAppear_anima.set_start_cb(lambda a: anima_ready_cb(anima_data))
     disAppear_anima.set_path_cb(lv.anim_t.path_ease_out)
     disAppear_anima.start()
@@ -117,6 +143,8 @@ def _pm_anima_appear(pm_page, behavior, cb):
     anima_data = lv_pm_anima_data(pm_page, cb, behavior)
     if behavior.anima == lv_pm.lv_pm_open_options.LV_PM_ANIMA_SLIDE:
         _pm_slide_appear(anima_data)
+    elif behavior.anima == lv_pm.lv_pm_open_options.LV_PM_ANIMA_FADE:
+        _pm_fade_in(anima_data)
     elif behavior.anima == lv_pm.lv_pm_open_options.LV_PM_ANIMA_POPUP:
         _pm_popup_appear(anima_data)
     else:
@@ -126,11 +154,12 @@ def _pm_anima_disAppear(pm_page, behavior, cb):
     if (not behavior) or behavior.anima == lv_pm.lv_pm_open_options.LV_PM_ANIMA_NONE:
         cb(pm_page, behavior)
         return True
-    print("disappear")
     anima_data = lv_pm_anima_data(pm_page, cb, behavior)
 
     if behavior.anima == lv_pm.lv_pm_open_options.LV_PM_ANIMA_SLIDE:
         _pm_slide_disAppear(anima_data)
+    elif behavior.anima == lv_pm.lv_pm_open_options.LV_PM_ANIMA_FADE:
+        _pm_fade_out(anima_data)
     elif behavior.anima == lv_pm.lv_pm_open_options.LV_PM_ANIMA_POPUP:
         _pm_popup_disAppear(anima_data)
     else:
