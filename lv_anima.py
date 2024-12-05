@@ -23,9 +23,6 @@ class lv_pm_anima_data():
 def anima_ready_cb(anima_data: lv_pm_anima_data):
     anima_data.cb(anima_data.page, anima_data.options)
 
-def anim_opa_cb(obj, v):
-    obj.set_style_opa(v, lv.STATE.DEFAULT)
-
 # ----------------------------------------------------------------------------------------------------------
 # slide animation
 # ----------------------------------------------------------------------------------------------------------
