@@ -32,7 +32,7 @@ def _back_disAppear_complete_cb(pm_page, options):
 class lv_pm_open_options():
     LV_PM_ANIMA_NONE = 0
     LV_PM_ANIMA_SLIDE = 1
-    LV_PM_ANIMA_SLIDE_SCALE = 2
+    LV_PM_ANIMA_FADE = 2
     LV_PM_ANIMA_POPUP = 3
 
     LV_PM_ANIMA_TOP = 0
