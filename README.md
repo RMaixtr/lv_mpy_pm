@@ -1,4 +1,4 @@
-# lv_mpy_pm
+# lv_pm_mpy
 
 **[lvgl-pm](https://github.com/LanFly/lvgl-pm)** 的 micropython 版本
 
